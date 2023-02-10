@@ -346,7 +346,7 @@ function spawnenemies() {
     }, 1000)
 }
 
-Enemy.prototype.shoot = () => {
+Enemy.prototype.shoot = function () {
     if (this.fires) {
         console.log(this.firerate);
         const angle = Math.atan2(
