@@ -104,30 +104,29 @@ class Enemy {
         ctx.fill()
     }
 
-    shoot(pow) {
-        if (this.fires) {
-            console.log(this.firerate);
-            const angle = Math.atan2(
-                player.y - this.y,
-                player.x - this.x
-            );
-            const velocity = {
-                x: Math.cos(angle) * 5,
-                y: Math.sin(angle) * 5
-            };
-            enemprojectiles.push(new Projectile(
-                this.x,
-                this.y,
-                5,
-                this.color,
-                velocity
-            ));
-
-
-            setTimeout(this.shoot(5), this.firerate);
-            this.vee = false;
-            return pow * 5
-        }
+    shoot() {
+        // if (this.fires) {
+        //     console.log(this.firerate);
+        //     const angle = Math.atan2(
+        //         player.y - this.y,
+        //         player.x - this.x
+        //     );
+        //     const velocity = {
+        //         x: Math.cos(angle) * 5,
+        //         y: Math.sin(angle) * 5
+        //     };
+        //     enemprojectiles.push(new Projectile(
+        //         this.x,
+        //         this.y,
+        //         5,
+        //         this.color,
+        //         velocity
+        //     ));
+        //
+        //
+        //     setTimeout(this.shoot, this.firerate);
+        //     this.vee = false;
+        // }
     }
 
     update() {
@@ -339,12 +338,37 @@ function spawnenemies() {
             enemies.forEach((enemy) => {
                 if (enemy.vee === true) {
                     console.log('yes')
-                    enemy.shoot(5);
+                    enemy.shoot();
 
                 }
             })
         }
     }, 1000)
+}
+
+Enemy.prototype.shoot = () => {
+    if (this.fires) {
+        console.log(this.firerate);
+        const angle = Math.atan2(
+            player.y - this.y,
+            player.x - this.x
+        );
+        const velocity = {
+            x: Math.cos(angle) * 5,
+            y: Math.sin(angle) * 5
+        };
+        enemprojectiles.push(new Projectile(
+            this.x,
+            this.y,
+            5,
+            this.color,
+            velocity
+        ));
+
+
+        setTimeout(this.shoot, this.firerate);
+        this.vee = false;
+    }
 }
 
 // function plrhpud() {
