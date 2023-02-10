@@ -338,7 +338,7 @@ function spawnenemies() {
             enemies.forEach((enemy) => {
                 if (enemy.vee === true) {
                     console.log('yes')
-                    enemy.shoot();
+                    shoot();
 
                 }
             })
@@ -346,7 +346,7 @@ function spawnenemies() {
     }, 1000)
 }
 
-Enemy.prototype.shoot = function () {
+function shoot() {
     if (this.fires) {
         console.log(this.firerate);
         const angle = Math.atan2(
@@ -365,8 +365,8 @@ Enemy.prototype.shoot = function () {
             velocity
         ));
 
-
-        setTimeout(this.shoot, this.firerate);
+        console.log(enemprojectiles);
+        setTimeout(shoot, this.firerate);
         this.vee = false;
     }
 }
