@@ -95,6 +95,7 @@ class Enemy {
         this.fires = fires;
         this.firerate = firerate;
         this.vee = true;
+        this.plap = undefined;
     }
 
     draw() {
@@ -105,28 +106,34 @@ class Enemy {
     }
 
     shoot() {
-        // if (this.fires) {
-        //     console.log(this.firerate);
-        //     const angle = Math.atan2(
-        //         player.y - this.y,
-        //         player.x - this.x
-        //     );
-        //     const velocity = {
-        //         x: Math.cos(angle) * 5,
-        //         y: Math.sin(angle) * 5
-        //     };
-        //     enemprojectiles.push(new Projectile(
-        //         this.x,
-        //         this.y,
-        //         5,
-        //         this.color,
-        //         velocity
-        //     ));
-        //
-        //
-        //     setTimeout(this.shoot, this.firerate);
-        //     this.vee = false;
-        // }
+        if (this.fires) {
+            console.log(this.firerate);
+            const angle = Math.atan2(
+                player.y - this.y,
+                player.x - this.x
+            );
+            const velocity = {
+                x: Math.cos(angle) * 5,
+                y: Math.sin(angle) * 5
+            };
+            enemprojectiles.push(new Projectile(
+                this.x,
+                this.y,
+                5,
+                this.color,
+                velocity
+            ));
+
+            if (this.hp <= 0) {
+                clearTimeout(this.plap);
+            }
+            if (this.hp > 0) {
+                this.plap = setTimeout(() => {
+                    this.shoot()
+                }, this.firerate);
+            }
+            this.vee = false;
+        }
     }
 
     update() {
@@ -239,6 +246,27 @@ function animate() {
             }, 0)
         }
     });
+    enemprojectiles.forEach((enemproj, index) => {
+        projectiles.forEach((projectile, projectileindex) => {
+            const dist = Math.hypot(projectile.x - enemproj.x, projectile.y - enemproj.y);
+
+            if (dist - enemproj.radius - projectile.radius < 1) {
+                for (let i = 0; i < enemproj.radius; i++) {
+                    particles.push(new Particle(enemproj.x, enemproj.y, Math.random() * 2, 'white', {
+                            x: (Math.random() - 0.5) * (Math.random() * 4),
+                            y: (Math.random() - 0.5) * (Math.random() * 4)
+                        })
+                    )
+                }
+
+                setTimeout(() => {
+                    enemprojectiles.splice(index, 1);
+                    projectiles.splice(projectileindex, 1);
+                }, 0)
+            }
+        })
+    })
+
     enemies.forEach((enemy, index) => {
         enemy.update();
         const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y);//could add the radii here for col_de
@@ -250,6 +278,7 @@ function animate() {
 
         if (dist - enemy.radius - player.radius < 1) {
             player.hp -= enemy.hp;
+            enemy.hp = 0;
             setTimeout(() => {
                 enemies.splice(index, 1);
             }, 0);
@@ -338,7 +367,7 @@ function spawnenemies() {
             enemies.forEach((enemy) => {
                 if (enemy.vee === true) {
                     console.log('yes')
-                    shoot();
+                    enemy.shoot();
 
                 }
             })
@@ -346,30 +375,31 @@ function spawnenemies() {
     }, 1000)
 }
 
-function shoot() {
-    if (this.fires) {
-        console.log(this.firerate);
-        const angle = Math.atan2(
-            player.y - this.y,
-            player.x - this.x
-        );
-        const velocity = {
-            x: Math.cos(angle) * 5,
-            y: Math.sin(angle) * 5
-        };
-        enemprojectiles.push(new Projectile(
-            this.x,
-            this.y,
-            5,
-            this.color,
-            velocity
-        ));
-
-        console.log(enemprojectiles);
-        setTimeout(shoot, this.firerate);
-        this.vee = false;
-    }
-}
+//
+// function shoot() {
+//     if (this.fires) {
+//         console.log(this.firerate);
+//         const angle = Math.atan2(
+//             player.y - this.y,
+//             player.x - this.x
+//         );
+//         const velocity = {
+//             x: Math.cos(angle) * 5,
+//             y: Math.sin(angle) * 5
+//         };
+//         enemprojectiles.push(new Projectile(
+//             this.x,
+//             this.y,
+//             5,
+//             this.color,
+//             velocity
+//         ));
+//
+//         console.log(enemprojectiles);
+//         setTimeout(shoot, this.firerate);
+//         this.vee = false;
+//     }
+// }
 
 // function plrhpud() {
 //     switch (player.life) {
